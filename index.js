@@ -12,8 +12,9 @@ hexo.extend.filter.register('after_post_render', function(data){
     var link = data.permalink;
 	var beginPos = getPosition(link, '/', 3) + 1;
 	// In hexo 3.1.1, the permalink of "about" page is like ".../about/index.html".
-	var endPos = link.lastIndexOf('/') + 1;
+	var endPos = link.lastIndexOf('.htm');
     link = link.substring(beginPos, endPos);
+    console.log(link);
 
     var toprocess = ['excerpt', 'more', 'content'];
     for(var i = 0; i < toprocess.length; i++){
@@ -27,29 +28,24 @@ hexo.extend.filter.register('after_post_render', function(data){
       });
 
       $('img').each(function(){
-		if ($(this).attr('src')){
-			// For windows style path, we replace '\' to '/'.
-			var src = $(this).attr('src').replace('\\', '/');
-			if(!/http[s]*.*|\/\/.*/.test(src) &&
-			   !/^\s*\//.test(src)) {
-			  // For "about" page, the first part of "src" can't be removed.
-			  // In addition, to support multi-level local directory.
-			  var linkArray = link.split('/').filter(function(elem){
-				return elem != '';
-			  });
-			  var srcArray = src.split('/').filter(function(elem){
-				return elem != '' && elem != '.';
-			  });
-			  if(srcArray.length > 1)
-				srcArray.shift();
-			  src = srcArray.join('/');
-			  $(this).attr('src', config.root + link + src);
-			  console.info&&console.info("update link as:-->"+config.root + link + src);
-			}
-		}else{
-			console.info&&console.info("no src attr, skipped...");
-			console.info&&console.info($(this));
-		}
+		// For windows style path, we replace '\' to '/'.
+        var src = $(this).attr('src').replace('\\', '/');
+        if(!/http[s]*.*|\/\/.*/.test(src)){
+		  // For "about" page, the first part of "src" can't be removed.
+		  // In addition, to support multi-level local directory.
+		  var linkArray = link.split('/').filter(function(elem){
+		    return elem != '';
+		  });
+		  var srcArray = src.split('/').filter(function(elem){
+		    return elem != '';
+      });
+      console.log(linkArray, srcArray);
+      if(linkArray[linkArray.length - 1] == srcArray[0])
+		    srcArray.shift();
+          src = srcArray.join('/');
+          console.log("in " + linkArray, src);
+          $(this).attr('src', '/' + link + '/' + src);
+        }
       });
       data[key] = $.html();
     }
