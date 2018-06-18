@@ -14,7 +14,6 @@ hexo.extend.filter.register('after_post_render', function(data){
 	// In hexo 3.1.1, the permalink of "about" page is like ".../about/index.html".
 	var endPos = link.lastIndexOf('.htm');
     link = link.substring(beginPos, endPos);
-    console.log(link);
 
     var toprocess = ['excerpt', 'more', 'content'];
     for(var i = 0; i < toprocess.length; i++){
@@ -43,7 +42,6 @@ hexo.extend.filter.register('after_post_render', function(data){
       if(linkArray[linkArray.length - 1] == srcArray[0])
 		    srcArray.shift();
           src = srcArray.join('/');
-          console.log("in " + linkArray, src);
           $(this).attr('src', '/' + link + '/' + src);
         }
       });
